@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sushiboii</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Sushi00</h1>
+  <!--<button onclick="location.href='#about'">Details</button>-->
+  <button onclick="location.href='#projects'">Logs</button>
+  <button onclick="location.href='#misc'">Sandbox Environment</button>
+
+  <div id="container" class="container">
+ 
+    <div class="image-box" id="imageBox">
+      <div class="glitch-lines" id="glitch-lines"></div>
+      <img src="images/anim1.png" class="active" alt="Image 1">
+      <img src="images/anim2.png" alt="Image 2">
+      <img src="images/anim3.png" alt="Image 3">
+      <img src="images/anim4.png" alt="Image 4">
+    </div>
+    <div id="about" class="about">
+      <div id="namebar" class="namebar">Sushi00</div>
+      
+      <div class="typewriter" id="typewriter"></div> 
+     
+    </div>
+      <script>
+        const sentences = [
+          "Helloo, Sushanth here   :)",
+          "Software dev who also likes space, gaming, reading,",
+          "robotics......",
+          "",
+          "This here is a collection of stuff i have done, doing and  random thoughts"
+        ];
+    
+        let currentSentence = 0;
+        let images = document.querySelectorAll("#imageBox img");
+        let typingInProgress = false;
+        let imageCycleInterval;
+        let currentImage = 0;
+
+        function typeSentence(sentence, container) {
+          typingInProgress = true;
+          startImageCycle();
+
+          return new Promise((resolve) => {
+            let currentChar = 0;
+            const sentenceDiv = document.createElement("div");
+            sentenceDiv.className = "sentence";
+            container.appendChild(sentenceDiv);
+
+            const typingInterval = setInterval(() => {
+              if (currentChar < sentence.length) {
+                sentenceDiv.innerHTML += sentence[currentChar];
+                currentChar++;
+              } else {
+                clearInterval(typingInterval);
+                sentenceDiv.innerHTML += '<span class="blinking-cursor"></span>';
+                resolve();
+              }
+            }, 50); // Typing speed
+          });
+        }
+
+        function startImageCycle() {
+          if (!imageCycleInterval) {
+            imageCycleInterval = setInterval(() => {
+              images[currentImage].classList.remove("active");
+              currentImage = (currentImage + 1) % images.length;
+              images[currentImage].classList.add("active");
+            }, 500); // Change image every second
+          }
+        }
+
+        function stopImageCycle() {
+          clearInterval(imageCycleInterval);
+          imageCycleInterval = null;
+          images.forEach((img) => img.classList.remove("active"));
+          images[0].classList.add("active");
+        }
+
+        async function displaySentences() {
+          const container = document.getElementById("typewriter");
+          while (currentSentence < sentences.length) {
+            await typeSentence(sentences[currentSentence], container);
+            currentSentence++;
+          }
+          typingInProgress = false;
+          stopImageCycle(); // Stop cycling after typing ends
+        }
+
+        // Start displaying sentences automatically
+        window.onload = displaySentences;
+    </script>
+  </div>
+</body>
+</html>
